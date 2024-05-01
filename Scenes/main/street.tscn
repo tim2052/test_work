@@ -69,6 +69,9 @@ func load_game():
 		return
 	var save_nodes = get_tree().get_nodes_in_group(\"GroupStreet\")
 	for i in save_nodes:
+		if i.name == \"Player\" or \"House\" or \"House2\":
+			print(\"succes\")
+			continue
 		i.queue_free()
 
 	var save_game = FileAccess.open(\"user://savegame.save\", FileAccess.READ)
@@ -81,17 +84,35 @@ func load_game():
 
 		var node_data = json.get_data()
 
-		# Firstly, we need to create the object and add it to the tree and set its position.
 		var new_object = load(node_data[\"filename\"]).instantiate()
+		
+		match node_data[\"filename\"]:
+			\"res://Scenes/main/Player.tscn\":
+				get_node(node_data[\"fileInScene\"]).position = Vector2(node_data[\"pos_x\"], node_data[\"pos_y\"])
+				for i in node_data.keys():
+					if i == \"filename\" or i == \"parent\":
+						continue
+					get_node(node_data[\"fileInScene\"]).set(i, node_data[i])
+				continue
+
+			\"res://Scenes/main/house.tscn\":
+				for i in node_data.keys():
+					if i == \"filename\" or i == \"parent\":
+						continue
+					get_node(node_data[\"fileInScene\"]).set(i, node_data[i])
+				continue
+		
+		#if node_data[\"fileInScene\"] == \"res://Scenes/main/Player.tscn\":
+			#$Player.position = Vector2(node_data[\"pos_x\"], node_data[\"pos_y\"])
+			#continue
+		#if node_data[\"filename\"] == \"res://Scenes/main/Player.tscn\":
 		get_node(node_data[\"parent\"]).add_child(new_object)
 		new_object.position = Vector2(node_data[\"pos_x\"], node_data[\"pos_y\"])
 
-		# Now we set the remaining variables.
 		for i in node_data.keys():
 			if i == \"filename\" or i == \"parent\" or i == \"pos_x\" or i == \"pos_y\":
 				continue
 			new_object.set(i, node_data[i])
-
 
 
 "
@@ -168,6 +189,9 @@ position = Vector2(99, 169)
 
 [node name="House" parent="." groups=["GroupStreet"] instance=ExtResource("6_pbf4j")]
 position = Vector2(224, 48)
+
+[node name="House2" parent="." groups=["GroupStreet"] instance=ExtResource("6_pbf4j")]
+position = Vector2(465, 48)
 
 [node name="TP" type="Area2D" parent="."]
 script = SubResource("GDScript_txr8n")

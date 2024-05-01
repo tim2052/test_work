@@ -70,6 +70,7 @@ func save():
 	var save_dict = {
 		"name" : name,
 		"filename" : get_scene_file_path(),
+		"fileInScene": get_path(),
 		"parent" : get_parent().get_path(),
 		"pos_x" : position.x, 
 		"pos_y" : position.y,
