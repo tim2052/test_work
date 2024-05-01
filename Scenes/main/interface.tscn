@@ -1,0 +1,117 @@
+[gd_scene load_steps=5 format=3 uid="uid://hmv70w6ykk52"]
+
+[sub_resource type="GDScript" id="GDScript_1hrfa"]
+script/source = "extends Control
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	pass # Replace with function body.
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	if Input.is_action_just_pressed(\"Q_Action\"):
+		if get_node_or_null(\"Inventory\") == null:
+			var inv = preload(\"res://Scenes/main/inventory.tscn\")
+			add_child(inv.instantiate())
+			get_node(\"Inventory\").inventoryInit(Global.inventory)
+			get_node(\"Inventory\").PlayerInventory = true
+			get_tree().paused = true
+
+	$CV/VBC/CC/Label.text = \"HP: \" + str(Global.health) + \"/\" + str(Global.healthMax)
+	$CV/VBC/CC1/Label2.text = \"Keys: \" + str(Global.keys)
+	pass
+	
+func inventorySort():
+	var texture
+	var id = \"\"
+	for i in range (7):
+		if Global.inventory[i] == 0000 && Global.inventory[i + 1] != 0000:
+			Global.inventory[i] = Global.inventory[i + 1]
+			Global.inventory[i + 1] = 0
+		
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_5mo0t"]
+font_size = 50
+outline_size = 5
+outline_color = Color(0.227451, 0.2, 0.180392, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_act5k"]
+font_size = 35
+
+[sub_resource type="LabelSettings" id="LabelSettings_d0hqw"]
+font_size = 30
+
+[node name="Interface" type="Control"]
+process_mode = 3
+z_index = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_1hrfa")
+
+[node name="CV" type="CanvasLayer" parent="."]
+
+[node name="VBC" type="VBoxContainer" parent="CV"]
+offset_left = 60.0
+offset_top = 48.0
+offset_right = 560.0
+offset_bottom = 248.0
+pivot_offset = Vector2(0, 100)
+size_flags_horizontal = 3
+
+[node name="CC" type="CenterContainer" parent="CV/VBC"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="CV/VBC/CC"]
+layout_mode = 2
+text = "HP: "
+label_settings = SubResource("LabelSettings_5mo0t")
+
+[node name="CC1" type="CenterContainer" parent="CV/VBC"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="Label2" type="Label" parent="CV/VBC/CC1"]
+layout_mode = 2
+text = "Keys:"
+label_settings = SubResource("LabelSettings_5mo0t")
+
+[node name="CC" type="CenterContainer" parent="CV"]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -588.0
+offset_bottom = 200.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="CV/CC"]
+layout_mode = 2
+text = "Game over... Restart for 3 second..."
+label_settings = SubResource("LabelSettings_act5k")
+
+[node name="MC" type="MarginContainer" parent="CV"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -750.0
+offset_top = -100.0
+offset_right = 750.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 8
+
+[node name="Label" type="Label" parent="CV/MC"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_d0hqw")

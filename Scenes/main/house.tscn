@@ -1,0 +1,166 @@
+[gd_scene load_steps=7 format=3 uid="uid://u51ah7louqwj"]
+
+[ext_resource type="Texture2D" uid="uid://c2xtslvyek3md" path="res://Assets/house_1.png" id="1_no3x6"]
+[ext_resource type="Texture2D" uid="uid://dq2urjeeau40j" path="res://Assets/house_1_red.png" id="2_8huxq"]
+
+[sub_resource type="GDScript" id="GDScript_duk4x"]
+script/source = "extends StaticBody2D
+
+var unlock = false
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	$Timer.start() # Replace with function body.
+	$Timer2.start()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+
+	pass
+
+
+func _on_area_2d_body_entered(body):
+	if body.name == \"Player\" || body.name == \"Player2\":
+		if unlock == true:
+			#save_game()
+			get_tree().change_scene_to_file(\"res://Scenes/main/room.tscn\")
+			pass
+		else:
+			$VBoxContainer.visible = true
+			
+	pass # Replace with function body.
+
+
+func _on_area_2d_body_exited(body):
+	if body.name == \"Player\":
+		if unlock == false:
+			$VBoxContainer.visible = false
+			
+	pass # Replace with function body.
+
+
+func _on_button_pressed():
+	if Global.keys > 0:
+		Global.keys -= 1
+		$VBoxContainer.queue_free()
+		$door.texture = load(\"res://Assets/house_1_green.png\")
+		unlock = true
+		save_game()
+		Global.save = true
+		get_tree().change_scene_to_file(\"res://Scenes/main/room.tscn\")
+	pass # Replace with function body.
+	
+func _on_button_2_pressed():
+	$VBoxContainer.visible = false
+	pass # Replace with function body.
+
+
+func save():
+	var save_dict = {
+		\"filename\" : get_scene_file_path(),
+		\"parent\" : get_parent().get_path(),
+		\"pos_x\" : position.x, 
+		\"pos_y\" : position.y,
+		\"unlock\" : unlock,
+	}
+	return save_dict
+
+func save_game():
+	var save_game = FileAccess.open(\"user://savegame.save\", FileAccess.WRITE)
+	var save_nodes = get_tree().get_nodes_in_group(\"GroupStreet\")
+	for node in save_nodes:
+
+		var node_data = node.call(\"save\")
+		var json_string = JSON.stringify(node_data)
+		save_game.store_line(json_string)
+
+func locFunc():
+	unlock = false
+	$door.texture = load(\"res://Assets/house_1_red.png\")
+
+func _on_timer_timeout():
+	if unlock == true:
+		name = \"House\"
+		$door.texture = load(\"res://Assets/house_1_green.png\")
+	pass # Replace with function body.
+
+
+
+func _on_timer_2_timeout():
+	$Area2D.monitoring = true
+	pass # Replace with function body.
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6u4y2"]
+size = Vector2(128, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u3xsg"]
+size = Vector2(65, 36)
+
+[sub_resource type="LabelSettings" id="LabelSettings_nyech"]
+font_size = 10
+
+[node name="House" type="StaticBody2D"]
+script = SubResource("GDScript_duk4x")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_no3x6")
+
+[node name="door" type="Sprite2D" parent="."]
+texture = ExtResource("2_8huxq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_6u4y2")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(-1, 23)
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0.5, 27)
+shape = SubResource("RectangleShape2D_u3xsg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+visible = false
+offset_left = -63.0
+offset_top = -32.0
+offset_right = 65.0
+offset_bottom = 8.0
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.5
+
+[node name="Label" type="Label" parent="VBoxContainer/CenterContainer"]
+layout_mode = 2
+text = "потратить 1 ключ?"
+label_settings = SubResource("LabelSettings_nyech")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+text = "Yes"
+
+[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 15
+text = "No"
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="Timer2" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_2_pressed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="Timer2" to="." method="_on_timer_2_timeout"]

@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://c2hxslm5lx3mo"]
+
+[ext_resource type="Texture2D" uid="uid://c2xtslvyek3md" path="res://Assets/house_1.png" id="1_pe21m"]
+[ext_resource type="Texture2D" uid="uid://dq2urjeeau40j" path="res://Assets/house_1_red.png" id="2_hbqx6"]
+
+[sub_resource type="GDScript" id="GDScript_l6m66"]
+script/source = "extends StaticBody2D
+
+@onready var lock = true
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+func unlock():
+"
+
+[node name="Houses" type="StaticBody2D"]
+script = SubResource("GDScript_l6m66")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_pe21m")
+
+[node name="lockDoorsprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_hbqx6")

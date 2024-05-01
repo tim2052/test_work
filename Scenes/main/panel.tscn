@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://biop00nj4bkwh"]
+
+[ext_resource type="Texture2D" uid="uid://mxq3la1vp0op" path="res://Assets/black.png" id="1_51wiw"]
+[ext_resource type="Script" path="res://Scenes/main/panel.gd" id="2_12di5"]
+[ext_resource type="Texture2D" uid="uid://cu65g4pyode4o" path="res://Assets/clear.png" id="3_nwmfx"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_g8ovo"]
+texture = ExtResource("1_51wiw")
+
+[node name="Panel" type="Panel"]
+self_modulate = Color(1, 1, 1, 0.298039)
+custom_minimum_size = Vector2(100, 100)
+theme_override_styles/panel = SubResource("StyleBoxTexture_g8ovo")
+script = ExtResource("2_12di5")
+
+[node name="CC" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CC"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+focus_mode = 1
+texture = ExtResource("3_nwmfx")
+
+[connection signal="focus_entered" from="CC/TextureRect" to="." method="_on_texture_rect_focus_entered"]

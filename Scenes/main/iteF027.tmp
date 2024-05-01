@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://deqff0p7diwo1"]
+
+[ext_resource type="Texture2D" uid="uid://c8obp47sa5ja3" path="res://Assets/itemSet.png" id="1_b8wof"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w71ke"]
+texture = ExtResource("1_b8wof")
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gr6vv"]
+sources/0 = SubResource("TileSetAtlasSource_w71ke")
+
+[sub_resource type="GDScript" id="GDScript_uocon"]
+script/source = "extends TileMap
+
+var itemsID = [[0,0,0,0,0,0,0,0,0,0], [0,0,0,0,0,0,0,0,0,0,0]]
+var usedCells = get_used_cells(0)
+var itemsOnSceenPool = []
+
+func _ready():
+	ItemsIDInit()
+	
+	itemsInit()
+	
+	pass
+
+func ItemsIDInit():
+	itemsID[0][0] = null
+	itemsID[1][0] = \"apple\"
+	itemsID[2][0] = \"chili\"
+	itemsID[3][0] = \"amulet\"
+	itemsID[4][0] = \"alarm_potion\"
+	itemsID[5][0] = \"key\"
+	itemsID[1][0] = \"orange\"
+	itemsID[1][1] = \"teleport_potion\"
+	itemsID[1][2] = \"token\"
+
+func itemsInit():
+	var preloadItem = preload(\"res://Scenes/main/item_on_scene.tscn\")
+	var itemIcon
+	var coords
+	for i in range(usedCells.size() - 1):
+		itemsOnSceenPool.append(preloadItem.instantiate())
+		add_child(itemsOnSceenPool[i])
+		coords = get_cell_atlas_coords(0, Vector2i(usedCells[i]), false)
+		itemsOnSceenPool[i].itemName = \\
+		Global.itemList[(itemsID[coords.x][coords.y])[\"name\"]]
+		itemsOnSceenPool[i].get_node(\"Spite2D\").texture = \\
+		load(Global.itemList[(itemsID[coords.x][coords.y])[\"icon\"]])
+		itemsOnSceenPool[i].position = usedCells[i]
+
+		
+"
+
+[node name="ItemMap" type="TileMap"]
+tile_set = SubResource("TileSet_gr6vv")
+format = 2
+script = SubResource("GDScript_uocon")

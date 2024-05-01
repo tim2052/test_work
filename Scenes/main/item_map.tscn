@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=3 uid="uid://deqff0p7diwo1"]
+
+[ext_resource type="Texture2D" uid="uid://7olq7jahjduk" path="res://Assets/itemSet.png" id="1_b8wof"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_w71ke"]
+texture = ExtResource("1_b8wof")
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gr6vv"]
+sources/0 = SubResource("TileSetAtlasSource_w71ke")
+
+[sub_resource type="GDScript" id="GDScript_uocon"]
+script/source = "extends TileMap
+
+var itemsID = [[0,0], [0,0], [0,0], [0,0], [0,0], [0,0]]
+@onready var usedCells = get_used_cells(0)
+var itemsOnSceenPool = []
+
+var init = false
+
+
+func _ready():
+	self_modulate = 0
+
+	
+
+	
+	pass
+
+
+func ItemsIDInit():
+	itemsID[0][0] = null
+	itemsID[1][0] = \"apple\"
+	itemsID[2][0] = \"chili\"
+	itemsID[3][0] = \"amulet\"
+	itemsID[4][0] = \"alarm_potion\"
+	itemsID[5][0] = \"key\"
+	itemsID[0][1] = \"orange\"
+	itemsID[1][1] = \"teleport_potion\"
+	itemsID[2][1] = \"token\"
+	itemsID[3][1] = \"oliver\"
+	return itemsID
+
+
+#
+func itemsUpdate():
+	$\"..\".itemsUpdate()
+	
+
+
+"
+
+[node name="ItemMap" type="TileMap"]
+visible = false
+tile_set = SubResource("TileSet_gr6vv")
+format = 2
+script = SubResource("GDScript_uocon")

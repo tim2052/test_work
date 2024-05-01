@@ -1,0 +1,84 @@
+[gd_scene load_steps=4 format=3 uid="uid://kvbivrj54q2m"]
+
+[ext_resource type="Texture2D" uid="uid://ck0r0dpqaqr3j" path="res://Assets/aple.png" id="1_pf5ob"]
+
+[sub_resource type="GDScript" id="GDScript_6ajam"]
+script/source = "extends Area2D
+
+var localID:int = 0
+var itemName
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	add_to_group(\"GroupStreet\")
+	if Global.save == true:
+		$Timer.start()
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+func _on_body_entered(body):
+	print(body.name)
+	if body.name == \"Player\" || body.name == \"Player2\":
+		
+		if itemName == \"key\":
+			Global.keys += 1
+			queue_free()
+			return
+		
+		for i in range (Global.inventory.size()):
+			if Global.inventory[i] == null:
+				Global.inventory[i] = itemName
+				$\"..\".itemsUpdate()
+				
+				queue_free()
+				
+				return
+		pass 
+
+func save():
+	var save_dict = {
+		\"filename\" : get_scene_file_path(),
+		\"parent\" : get_parent().get_path(),
+		\"texture\" : $Sprite2D.texture,
+		\"itemName\" : itemName,
+		\"pos_x\" : position.x, 
+		\"pos_y\" : position.y,
+	}
+	return save_dict
+
+func iconInit(adressTexture):
+	$Sprite2D.texture = load(adressTexture)
+	pass
+
+
+func _on_timer_timeout():
+	$Sprite2D.texture = load(Global.itemList[itemName][\"icon\"])
+	pass # Replace with function body.
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wchrx"]
+radius = 7.29167
+
+[node name="ItemOnScene" type="Area2D"]
+z_index = 1
+script = SubResource("GDScript_6ajam")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("1_pf5ob")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.959999, 0.959999)
+shape = SubResource("CircleShape2D_wchrx")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
