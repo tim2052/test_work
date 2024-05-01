@@ -80,6 +80,8 @@ func focusInventory(focusedCell):
 	$VBC/HBC/VBoxContainer/Label2.text = Global.itemList[curInv[focusedCell]][\"description\"]
 	if Global.itemList[curInv[focusedCell]][\"usable\"] == true:
 		$VBC/HBC/VBoxContainer2/Use.disabled = false
+	else:
+		$VBC/HBC/VBoxContainer2/Use.disabled = true
 	$VBC/HBC/VBoxContainer2/Remove.disabled = false
 	pass
 
